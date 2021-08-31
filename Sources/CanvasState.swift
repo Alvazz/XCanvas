@@ -8,7 +8,7 @@
 import Foundation
 
 fileprivate protocol Observable {
-    var undoable: Bool { get }
+    var isUndoable: Bool { get }
     var updateHandler: ((Any, Any) -> Void)? { get set }
 }
 
@@ -17,7 +17,8 @@ fileprivate protocol Observable {
 public class CanvasState<T>: Observable {
     
     fileprivate var updateHandler: ((Any, Any) -> Void)?
-    fileprivate let undoable: Bool
+    
+    var isUndoable: Bool
     
     public var wrappedValue: T {
         didSet { updateHandler?(oldValue, wrappedValue) }
@@ -25,7 +26,7 @@ public class CanvasState<T>: Observable {
     
     public init(wrappedValue: T, undoable: Bool = true) {
         self.wrappedValue = wrappedValue
-        self.undoable = undoable
+        self.isUndoable = undoable
     }
     
 }
@@ -42,7 +43,7 @@ extension CanvasStateManageable {
         
         for (key, var value) in properties {
             value.updateHandler = { [weak self] old, new in
-                if old is NSObject && value.undoable {
+                if old is NSObject && value.isUndoable {
                     let keyPath = String(key.dropFirst())
                     self?.registerStateUndoAction(keyPath: keyPath, value: old)
                 }
