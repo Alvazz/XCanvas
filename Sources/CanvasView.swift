@@ -137,6 +137,11 @@ open class CanvasView: NSView, CanvasStateManageable {
     @CanvasState(undoable: false) dynamic
     open var isObjectRotatable: Bool = false
     
+    open var canUndoRotation: Bool {
+        get { _isObjectRotatable.isUndoable }
+        set { _isObjectRotatable.isUndoable = newValue }
+    }
+    
     //
     
     @CanvasState dynamic
