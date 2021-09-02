@@ -3,22 +3,49 @@ import XCTest
 
 final class CanvasObjectTests: XCTestCase {
     
-    func testCodable() {
+    let lineObject: LineObject = {
         let lineObject = LineObject()
         lineObject.push(point: .zero)
         lineObject.push(point: CGPoint(x: 100, y: 100))
-        
+        return lineObject
+    }()
+    
+    func testObject() {
         XCTAssertTrue(lineObject.markAsFinished(), "Finish failed.")
+    }
+    
+    func testCodable() {
+        guard let json = try? JSONEncoder().encode(lineObject) else {
+            XCTFail("Encode object failed.")
+            return
+        }
         
-        let json = try? JSONEncoder().encode(lineObject)
-        XCTAssertNotNil(json, "Encode failed")
+        guard let decoded = try? JSONDecoder().decode(CanvasObject.self, from: json) else {
+            XCTFail("Decode object failed.")
+            return
+        }
         
-        let object = try? JSONDecoder().decode(CanvasObject.self, from: json!)
-        XCTAssertNotNil(json)
+        guard let object = try? CanvasObjectConverter.convert(object: decoded).get() else {
+            XCTFail("Convert object type failed.")
+            return
+        }
         
-        let _object = try? CanvasObjectConverter.convert(object: object!).get()
-        XCTAssertNotNil(_object)
-        XCTAssertTrue(_object is LineObject)
+        XCTAssertTrue(object is LineObject)
+    }
+    
+    func testPasteboard() {
+        typealias Pasteboard = CanvasObjectPasteboard<CanvasObjectConverter>
+        
+        XCTAssertTrue(Pasteboard(objects: [lineObject]).write(to: .general))
+        XCTAssertTrue(Pasteboard.canRead(from: .general))
+        
+        guard let pasteboard = Pasteboard.getInstance(from: .general) else {
+            XCTFail("Get pasteboard instance failed.")
+            return
+        }
+        
+        XCTAssertEqual(pasteboard.objects.count, 1)
+        XCTAssertTrue(pasteboard.objects[0] is LineObject)
     }
     
     static var allTests = [
