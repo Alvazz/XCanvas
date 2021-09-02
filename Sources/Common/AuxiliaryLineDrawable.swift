@@ -15,7 +15,3 @@ public enum AuxiliaryLineStyle {
 public protocol AuxiliaryLineDrawable {
     var auxiliaryLineStyle: AuxiliaryLineStyle { get }
 }
-
-extension AuxiliaryLineDrawable {
-    public var auxiliaryLineStyle: AuxiliaryLineStyle { .connected }
-}
