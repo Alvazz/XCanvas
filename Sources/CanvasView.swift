@@ -11,9 +11,8 @@ import AVFoundation.AVUtilities
 @objc public protocol CanvasViewDelegate: NSObjectProtocol {
     @objc optional func canvasView(_ canvasView: CanvasView, didStartSession object: CanvasObject)
     @objc optional func canvasView(_ canvasView: CanvasView, didFinishSession object: CanvasObject)
-    @objc optional func canvasViewDidCancelSession(_ canvasView: CanvasView)
-    /// 傳回 `true` 的話，會接著呼叫 `canvasViewDidCancelSession(_:)`。
     @objc optional func canvasView(_ canvasView: CanvasView, shouldDiscardFinishedObject object: CanvasObject) -> Bool
+    @objc optional func canvasViewDidCancelSession(_ canvasView: CanvasView)
     
     @objc optional func canvasView(_ canvasView: CanvasView, didMove objects: [CanvasObject])
     @objc optional func canvasView(_ canvasView: CanvasView, didEdit object: CanvasObject, at indexPath: IndexPath)
