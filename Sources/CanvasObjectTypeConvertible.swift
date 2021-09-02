@@ -8,23 +8,29 @@
 import Foundation
 
 public enum CanvasObjectConversionError: Error {
+    case noIdentifierProvided
     case undefinedIdentifier
-    case finishObjectFailed
 }
 
 public protocol CanvasObjectTypeConvertible {
-    init?(identifier: CanvasObject.Identifier)
+    
     var objectType: CanvasObject.Type { get }
+    
+    init?(identifier: CanvasObject.Identifier)
+    
 }
 
 extension CanvasObjectTypeConvertible {
     
-    public static func convert(object: CanvasObject) throws -> CanvasObject {
-        guard let id = object.identifier, let converter = Self.init(identifier: id) else {
-            throw CanvasObjectConversionError.undefinedIdentifier
+    public static func convert(object: CanvasObject) -> Result<CanvasObject, CanvasObjectConversionError> {
+        guard let identifier = object.identifier else {
+            return .failure(.noIdentifierProvided)
         }
-        
-        return object.convert(to: converter.objectType)
+        guard let converter = Self.init(identifier: identifier) else {
+            return .failure(.undefinedIdentifier)
+        }
+        let object = object.convert(to: converter.objectType)
+        return .success(object)
     }
     
 }
