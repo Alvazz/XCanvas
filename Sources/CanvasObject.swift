@@ -71,7 +71,7 @@ open class CanvasObject: NSObject, CanvasStateManageable, Codable, NSCopying {
         objectBrushes.compactMap { $0 as? CGPathProvider }.combined()
     }
     
-    private var userInfo: Data?
+    private var objectUserInfo: Data?
     
     private(set)
     open var identifier: Identifier? = nil
@@ -393,7 +393,7 @@ open class CanvasObject: NSObject, CanvasStateManageable, Codable, NSCopying {
         fillColor      = try container.decode(XColor.self, forKey: .fillColor).nsColor
         lineWidth      = try container.decode(CGFloat.self, forKey: .lineWidth)
         isFinished     = try container.decode(Bool.self, forKey: .isFinished)
-        userInfo       = try container.decodeIfPresent(Data.self, forKey: .userInfo)
+        objectUserInfo = try container.decodeIfPresent(Data.self, forKey: .userInfo)
         
         didUpdateLayout()
         update()
@@ -411,15 +411,15 @@ open class CanvasObject: NSObject, CanvasStateManageable, Codable, NSCopying {
         try container.encode(lineWidth, forKey: .lineWidth)
         try container.encode(isFinished, forKey: .isFinished)
         
-        let userInfo = userInfoForEncoding()
+        let userInfo = userInfo()
         try container.encodeIfPresent(userInfo, forKey: .userInfo)
     }
     
-    open func userInfoForEncoding() -> Data? {
+    open func userInfo() -> Data? {
         nil
     }
     
-    open func applyingUserInfo(_ data: Data) {
+    open func applyUserInfo(_ data: Data) {
         
     }
     
@@ -434,10 +434,10 @@ open class CanvasObject: NSObject, CanvasStateManageable, Codable, NSCopying {
         object.fillColor      = fillColor
         object.lineWidth      = lineWidth
         object.isFinished     = isFinished
-        object.userInfo       = userInfo
+        object.objectUserInfo = objectUserInfo
         
-        if let data = userInfo {
-            object.applyingUserInfo(data)
+        if let data = objectUserInfo {
+            object.applyUserInfo(data)
         }
         
         object.update()
@@ -446,13 +446,13 @@ open class CanvasObject: NSObject, CanvasStateManageable, Codable, NSCopying {
     }
     
     public func copy(with zone: NSZone? = nil) -> Any {
-        do {
-            let data = try JSONEncoder().encode(self)
-            let object = try JSONDecoder().decode(Self.self, from: data)
-            return object.convert(to: Self.self)
-        } catch {
-            fatalError("Copying Error: \(error)")
+        let object = convert(to: Self.self)
+        
+        if let data = userInfo() {
+            object.applyUserInfo(data)
         }
+        
+        return object
     }
     
 }
