@@ -63,9 +63,9 @@ open class CanvasObject: NSObject, CanvasStateManageable, Codable, NSCopying {
         }
     }
     
-    private var layoutBrushes: [Brush] = []
+    private var layoutBrushes: [Drawable] = []
 
-    private var objectBrushes: [Brush] = []
+    private var objectBrushes: [Drawable] = []
     
     open var path: CGPath? {
         objectBrushes.compactMap { $0 as? CGPathProvider }.combined()
@@ -293,7 +293,7 @@ open class CanvasObject: NSObject, CanvasStateManageable, Codable, NSCopying {
     
     // MARK: - Drawing
     
-    open func createLayoutBrushes() -> [Brush] {
+    open func createLayoutBrushes() -> [Drawable] {
         let path = layout.reduce(CGMutablePath()) { path, items in
             path.addLines(between: items)
             return path
@@ -306,7 +306,7 @@ open class CanvasObject: NSObject, CanvasStateManageable, Codable, NSCopying {
         return [descriptor]
     }
     
-    open func createObjectBrushes() -> [Brush] {
+    open func createObjectBrushes() -> [Drawable] {
         let path = layout.reduce(CGMutablePath()) { path, items in
             path.addLines(between: items)
             return path

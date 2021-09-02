@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol CGPathProvider: Brush {
+public protocol CGPathProvider: Drawable {
     var cgPath: CGPath { get }
 }
 

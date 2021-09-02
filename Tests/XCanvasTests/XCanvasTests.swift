@@ -16,7 +16,7 @@ class LineObject: CanvasObject {
         .default { self.first?.count != 2 ? .push : .finish }
     }
     
-    override func createLayoutBrushes() -> [Brush] { [] }
+    override func createLayoutBrushes() -> [Drawable] { [] }
     
     override func selectTest(_ rect: CGRect) -> Bool {
         guard let line = line else { return false }
