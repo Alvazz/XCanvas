@@ -45,18 +45,18 @@ extension CanvasStateManageable {
             value.updateHandler = { [weak self] old, new in
                 if old is NSObject && value.isUndoable {
                     let keyPath = String(key.dropFirst())
-                    self?.registerStateUndoAction(keyPath: keyPath, value: old)
+                    self?.registerUndoAction(keyPath: keyPath, value: old)
                 }
                 updateHandler()
             }
         }
     }
     
-    private func registerStateUndoAction(keyPath: String, value: Any) {
+    private func registerUndoAction(keyPath: String, value: Any) {
         undoManager?.registerUndo(withTarget: self) { object in
             // Redo
             if let curr = object.value(forKey: keyPath) {
-                object.registerStateUndoAction(keyPath: keyPath, value: curr)
+                object.registerUndoAction(keyPath: keyPath, value: curr)
             }
             // Undo
             object.undoManager?.disableUndoRegistration()
