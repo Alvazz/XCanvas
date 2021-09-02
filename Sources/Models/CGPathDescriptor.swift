@@ -10,19 +10,33 @@ import Cocoa
 extension CGPathDescriptor {
     
     public enum Method: Equatable {
-        case stroke(width: CGFloat)
-        case dash(width: CGFloat, phase: CGFloat, lengths: [CGFloat])
+        /**
+         Stroke Path
+         
+         1. Line width
+        */
+        case stroke(CGFloat)
+        
+        /**
+         Dashed Path
+         
+         1. Line Width
+         2. Phase
+         3. Lengths
+         */
+        case dash(CGFloat, CGFloat, [CGFloat])
+        
+        // Fill Path
         case fill
         
-        public static func defaultDash(width: CGFloat) -> Method {
-            .dash(width: width, phase: 0, lengths: [4])
-        }
+        public static func defaultDash(width: CGFloat) -> Method { .dash(width, 0, [4]) }
+        
     }
     
-    class Shadow {
-        var offset: CGSize
-        var blur: CGFloat
-        var color: NSColor?
+    public class Shadow {
+        public var offset: CGSize
+        public var blur: CGFloat
+        public var color: NSColor?
         
         init(offset: CGSize, blur: CGFloat, color: NSColor? = nil) {
             self.offset = offset
@@ -41,7 +55,7 @@ public class CGPathDescriptor: CGPathProvider {
     public var lineCap: CGLineCap = .butt
     public var lineJoin: CGLineJoin = .miter
     public var miterLimit: CGFloat = 10
-    private var shadow: Shadow?
+    public var shadow: Shadow?
     
     public init(method: Method, color: NSColor, path: CGPath) {
         self.method = method
@@ -98,10 +112,6 @@ public class CGPathDescriptor: CGPathProvider {
         case .fill:
             return cgPath.contains(point, using: .evenOdd)
         }
-    }
-    
-    public func setShadow(offset: CGSize, blur: CGFloat, color: NSColor? = nil) {
-        shadow = Shadow(offset: offset, blur: blur, color: color)
     }
     
 }

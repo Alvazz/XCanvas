@@ -312,7 +312,7 @@ open class CanvasObject: NSObject, CanvasStateManageable, Codable, NSCopying {
             return path
         }
         let descriptor = CGPathDescriptor(
-            method: .stroke(width: lineWidth),
+            method: .stroke(lineWidth),
             color: strokeColor,
             path: path
         )
