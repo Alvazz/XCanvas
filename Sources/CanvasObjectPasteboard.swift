@@ -11,6 +11,21 @@ extension NSPasteboard.PasteboardType {
     static let canvasObjects = NSPasteboard.PasteboardType("com.scchn.XCanvas.canvasObjects")
 }
 
+/**
+ Pasteboard support for `[CanvasObject]`.
+ 
+ Write Objects to Pasteboard:
+ 
+     CanvasObjectPasteboard<T>(objects: objects).write(to: .general)
+ 
+     print(CanvasObjectPasteboard<T>.canRead(from: .general))
+ 
+ Read Objects from Pasteboard:
+ 
+     let pasteboard = CanvasObjectPasteboard<T>.getInstance(from: .general)
+ 
+     print(pasteboard?.objects)
+ */
 public class CanvasObjectPasteboard<T: CanvasObjectTypeConvertible>: NSObject, NSPasteboardReading, NSPasteboardWriting {
     
     public static func getInstance(from pasteboard: NSPasteboard) -> Self? {
@@ -48,7 +63,7 @@ public class CanvasObjectPasteboard<T: CanvasObjectTypeConvertible>: NSObject, N
         return pasteboard.writeObjects([self])
     }
     
-    // MARK: -
+    // MARK: - NSPasteboardReading
     
     public static func readableTypes(for pasteboard: NSPasteboard) -> [NSPasteboard.PasteboardType] {
         [.canvasObjects]
@@ -57,6 +72,8 @@ public class CanvasObjectPasteboard<T: CanvasObjectTypeConvertible>: NSObject, N
     public static func readingOptions(forType type: NSPasteboard.PasteboardType, pasteboard: NSPasteboard) -> NSPasteboard.ReadingOptions {
         .asData
     }
+    
+    // MARK: - NSPasteboardWriting
     
     public func writingOptions(forType type: NSPasteboard.PasteboardType, pasteboard: NSPasteboard) -> NSPasteboard.WritingOptions {
         .promised
