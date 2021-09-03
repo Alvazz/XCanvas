@@ -9,19 +9,19 @@ import Foundation
 
 struct Layout: Codable {
     
+    enum CodingKeys: String, CodingKey {
+        case sections
+    }
+    
     typealias Section = [CGPoint]
+    
+    private(set)
+    var sections: [Section]
     
     private var counter = 0
     
-    private(set)
-    var sections: [Section] = []
-    
-    init() {
-        
-    }
-    
-    init(_ points: [Section]) {
-        self.sections = points
+    init(_ sections: [Section] = []) {
+        self.sections = sections
     }
     
     mutating func push(_ point: CGPoint, next: Bool = false) {
